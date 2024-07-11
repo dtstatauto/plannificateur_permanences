@@ -4,10 +4,10 @@ import random
 import io
 from itertools import cycle
 from datetime import timedelta, datetime 
-import locale
 
-# Assurez-vous que la locale est définie sur français pour afficher les jours en lettres 
-# locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8') 
+
+
+
 
 # Titre de l'application
 st.title("Planificateur permanences SinFlottes")
