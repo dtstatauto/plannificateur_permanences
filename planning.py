@@ -14,20 +14,21 @@ def format_date(date):
     return f"{jours_semaine[date.weekday()]} {date.day} {mois[date.month - 1]} {date.year}"
 
 # Titre de l'application
-st.title("Planificateur de Horaires de Travail en Équipes")
+st.title("Planificateur permanences")
 
 # Entrée pour les plages horaires
-st.header("Configurer les Plages Horaires") 
-time_slots = st.text_area("Entrez les plages horaires (une par ligne)", "8:00-12:00\n12:00-16:00\n16:00-20:00")
+st.header("Plages horaires") 
+time_slots = st.text_area("Entrez les plages horaires (une par ligne)", "à partir de 7h30\nJusqu'à 17h30\nJusqu'à 18h00")
 time_slots = time_slots.split('\n')
 
 # Entrée pour les membres de l'équipe
-st.header("Configurer les Membres de l'Équipe") 
-team_members = st.text_area("Entrez les noms des membres de l'équipe (un par ligne)", "Alice\nBob\nCharlie\nDavid") 
+st.header("Membres de l'équipe") 
+team_members = st.text_area("Entrez les noms des membres de l'équipe (un par ligne)", "Patou\nMartine\nMounia\nCyril\nMarc\nMarine\nVanessa\nKelly\nGilles\nLinda\nMarguerite\nLydia\nMathilde\nSonia\nMichele\nChristelle\nCelia\nSama\nTiti\nArmand") 
 team_members = team_members.split('\n')
 
+
 # Sélectionner une plage de dates
-st.header("Sélectionner une Plage de Dates") 
+st.header("Sélectionner une plage de dates") 
 date_range = st.date_input("Sélectionnez la plage de dates", [pd.Timestamp('today'), pd.Timestamp('today') + timedelta(days=6)])
 
 # Option pour inclure ou exclure les week-ends
@@ -89,7 +90,7 @@ if st.button("Générer le Planning"):
                 assigned_member = next(member_cycle)
                 for member in team_members:
                     if member == assigned_member:
-                        schedule.loc[time_slot, member] = 'Présent'
+                        schedule.loc[time_slot, member] = 'Permanence'
                         assignment_count[member] += 1  # Incrémenter le compteur
                     else:
                         schedule.loc[time_slot, member] = 'Absent' if not is_member_available(member, current_date) else 'Libre'
@@ -104,7 +105,7 @@ if st.button("Générer le Planning"):
 
     # Fonction pour styliser le DataFrame
     def highlight_status(val):
-        if val == 'Présent':
+        if val == 'Permanence':
             color = 'green'
         elif val == 'Absent':
             color = 'red'
@@ -143,7 +144,7 @@ if st.button("Générer le Planning"):
             for schedule in schedules:
                 for row_num, row_data in enumerate(schedule.itertuples(), start=row_offset):
                     for col_num, cell_data in enumerate(row_data, start=0):  # Inclure l'index
-                        if cell_data == 'Présent':
+                        if cell_data == 'Permanence':
                             worksheet.write(row_num, col_num, cell_data, format1)
                         elif cell_data == 'Absent':
                             worksheet.write(row_num, col_num, cell_data, format2)
@@ -154,4 +155,4 @@ if st.button("Générer le Planning"):
     # Convertir les plannings stylisés en fichier Excel téléchargeable
     excel_data = convert_df_to_excel(all_schedules)
     # Bouton de téléchargement du fichier Excel
-    st.download_button(label='Télécharger le planning en Excel', data=excel_data, file_name='planning.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    st.download_button(label='Télécharger le planning', data=excel_data, file_name='planning.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
